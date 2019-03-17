@@ -259,3 +259,5 @@ Place.create([{
             "opening_hours": OpeningHour.create([]),
             "picture_url": "https://barnaby-development.s3.amazonaws.com/uploads/picture/picture_file/549/Vintage_Hotel_Wine_Bar.jpg"
         }])
+
+User.create(name: 'Test', username: 'test', email: 'test@test.test', password: 'password')
