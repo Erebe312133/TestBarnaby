@@ -14,7 +14,7 @@ class PlacesController < ApplicationController
         )
         json = JSON.parse response
 
-        places = Place.find_by_name(params[:q])
+        places = Place.by_matching_name(params[:q])
 
         render json: {google_places: json['candidates'], barnaby_places: places}, status: 201
     end
