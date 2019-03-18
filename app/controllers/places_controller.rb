@@ -10,7 +10,7 @@ class PlacesController < ApplicationController
         end
         response = RestClient::Request.execute(
             method: :get,
-            url: URI.escape("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{params[:q]}&key=AIzaSyBYxH6hZs7QxFzDxSwcHBh7LCx-JUFkgHI&type=bar")
+            url: URI.escape("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{params[:q]}&key=GOOGLE_API_KEY")
         )
         json = JSON.parse response
 
