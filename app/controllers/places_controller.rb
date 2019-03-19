@@ -10,7 +10,7 @@ class PlacesController < ApplicationController
         @barnaby_places = []
         Place.by_matching_name(params[:q]).each { |place| @barnaby_places << place}
         get_place_with_google
-        render json: {google_places: @google_places, barnaby_places: @barnaby_places}, status: 201
+        render json: {google_places: @google_places, barnaby_places: @barnaby_places}, status: 200
     end
 
 private
@@ -47,8 +47,10 @@ private
             json_place = JSON.parse response_place
             @google_places << json_place['result'] if json_place.key?('result') && json_place['result']['types'].include?('bar')
         end
-        coordinate['viewport']['southwest'] = [coordinate['viewport']['southwest']['lat'], coordinate['viewport']['southwest']['lng']]
-        coordinate['viewport']['northeast'] = [coordinate['viewport']['northeast']['lat'], coordinate['viewport']['northeast']['lng']]
+        coordinate['viewport'] = [
+            [coordinate['viewport']['southwest']['lat'], coordinate['viewport']['southwest']['lng']],
+            [coordinate['viewport']['northeast']['lat'], coordinate['viewport']['northeast']['lng']]
+        ]
         coordinate['location'] = [coordinate['location']['lat'], coordinate['location']['lng']]
         Coordinate.in_bounds([coordinate['viewport']['southwest'], coordinate['viewport']['northeast']], :origin => coordinate['location']).each { |coord| @barnaby_places << coord.place }
     end
