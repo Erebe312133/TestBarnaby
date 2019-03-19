@@ -18,14 +18,14 @@ private
     def get_place_with_google
         response = RestClient::Request.execute(
             method: :get,
-            url: URI.escape("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{params[:q]}&key=AIzaSyBYxH6hZs7QxFzDxSwcHBh7LCx-JUFkgHI")
+            url: URI.escape("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=#{params[:q]}&key=#{GOOGLE_API_KEY}")
         )
         json = JSON.parse response
         @google_places = []
         json['predictions'][0..4].each do |row|
             response_place = RestClient::Request.execute(
                 method: :get,
-                url: URI.escape("https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyBYxH6hZs7QxFzDxSwcHBh7LCx-JUFkgHI&placeid=#{row['place_id']}&fields=alt_id,formatted_address,geometry,icon,id,name,permanently_closed,place_id,plus_code,scope,type,url,user_ratings_total,utc_offset,vicinity")
+                url: URI.escape("https://maps.googleapis.com/maps/api/place/details/json?key=#{GOOGLE_API_KEY}&placeid=#{row['place_id']}&fields=alt_id,formatted_address,geometry,icon,id,name,permanently_closed,place_id,plus_code,scope,type,url,user_ratings_total,utc_offset,vicinity")
             )
             json_place = JSON.parse response_place
             get_bar_in_place json_place['result']['geometry'] if json_place.key?('result') && json_place['result']['types'].include?('locality')
@@ -36,13 +36,13 @@ private
     def get_bar_in_place(coordinate)
         response = RestClient::Request.execute(
             method: :get,
-            url: URI.escape("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{coordinate['location']['lat']},#{coordinate['location']['lng']}&radius=1500&type=bar&key=AIzaSyBYxH6hZs7QxFzDxSwcHBh7LCx-JUFkgHI")
+            url: URI.escape("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{coordinate['location']['lat']},#{coordinate['location']['lng']}&radius=1500&type=bar&key=#{GOOGLE_API_KEY}")
         )
         json = JSON.parse response
         json['results'][0..4].each do |row|
             response_place = RestClient::Request.execute(
                 method: :get,
-                url: URI.escape("https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyBYxH6hZs7QxFzDxSwcHBh7LCx-JUFkgHI&placeid=#{row['place_id']}&fields=alt_id,formatted_address,geometry,icon,id,name,permanently_closed,place_id,plus_code,scope,type,url,user_ratings_total,utc_offset,vicinity")
+                url: URI.escape("https://maps.googleapis.com/maps/api/place/details/json?key=#{GOOGLE_API_KEY}&placeid=#{row['place_id']}&fields=alt_id,formatted_address,geometry,icon,id,name,permanently_closed,place_id,plus_code,scope,type,url,user_ratings_total,utc_offset,vicinity")
             )
             json_place = JSON.parse response_place
             @google_places << json_place['result'] if json_place.key?('result') && json_place['result']['types'].include?('bar')
